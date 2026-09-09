@@ -1,0 +1,71 @@
+import java.util.Scanner;
+
+public class ConsoleMenuTemplate {
+
+public static void main(String[] args) {
+Scanner scanner = new Scanner(System.in);
+int choice = 0;
+
+do {
+printMenu();
+choice = getMenuChoice(scanner);
+
+switch (choice) {
+case 1:
+addItem();
+break;
+case 2:
+viewItems();
+break;
+case 3:
+updateItem();
+break;
+case 4:
+deleteItem();
+break;
+case 0:
+System.out.println("Exiting program. Goodbye!");
+break;
+default:
+System.out.println("Invalid option, please try again.");
+}
+
+} while (choice != 0);
+
+scanner.close();
+}
+
+public static void printMenu() {
+System.out.println("\n===== MAIN MENU =====");
+System.out.println("1. Add Item");
+System.out.println("2. View Items");
+System.out.println("3. Update Item");
+System.out.println("4. Delete Item");
+System.out.println("0. Exit");
+System.out.print("Choose an option: ");
+}
+
+public static int getMenuChoice(Scanner scanner) {
+while (!scanner.hasNextInt()) {
+System.out.println("Please enter a number.");
+scanner.next();
+}
+return scanner.nextInt();
+}
+
+public static void addItem() {
+System.out.println("Add item logic goes here.");
+}
+
+public static void viewItems() {
+System.out.println("View items logic goes here.");
+}
+
+public static void updateItem() {
+System.out.println("Update item logic goes here.");
+}
+
+public static void deleteItem() {
+System.out.println("Delete item logic goes here.");
+}
+}
