@@ -1,0 +1,56 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class HashMapExamples {
+
+public static void main(String[] args) {
+// key = patient ID, value = patient name
+HashMap<Integer, String> patients = new HashMap<>();
+
+// add (put)
+patients.put(101, "John Doe");
+patients.put(102, "Jane Smith");
+patients.put(103, "Mary Jones");
+System.out.println("Map: " + patients);
+
+// get by key
+System.out.println("Patient 102: " + patients.get(102));
+
+// check if key/value exists
+System.out.println("Contains key 105? " + patients.containsKey(105));
+System.out.println("Contains value 'Jane Smith'? " + patients.containsValue("Jane Smith"));
+
+// update existing key
+patients.put(101, "John D. Updated");
+System.out.println("After update: " + patients);
+
+// remove
+patients.remove(103);
+System.out.println("After remove: " + patients);
+
+// size
+System.out.println("Size: " + patients.size());
+
+// loop through keys only
+System.out.println("\n--- Keys ---");
+for (int id : patients.keySet()) {
+System.out.println(id);
+}
+
+// loop through values only
+System.out.println("\n--- Values ---");
+for (String name : patients.values()) {
+System.out.println(name);
+}
+
+// loop through key-value pairs (most common in exams)
+System.out.println("\n--- Entries ---");
+for (Map.Entry<Integer, String> entry : patients.entrySet()) {
+System.out.println("ID: " + entry.getKey() + " -> Name: " + entry.getValue());
+}
+
+// getOrDefault — safe lookup without null risk
+String result = patients.getOrDefault(999, "Not Found");
+System.out.println("\nLookup 999: " + result);
+}
+}
