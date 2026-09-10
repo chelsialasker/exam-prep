@@ -1,0 +1,34 @@
+public class StringMethods {
+
+public static void main(String[] args) {
+String text = " Hello, PROG6112 World! ";
+
+System.out.println("Original: [" + text + "]");
+System.out.println("Trimmed: [" + text.trim() + "]");
+System.out.println("Upper: " + text.trim().toUpperCase());
+System.out.println("Lower: " + text.trim().toLowerCase());
+System.out.println("Length: " + text.trim().length());
+System.out.println("Contains 'PROG'? " + text.contains("PROG"));
+System.out.println("Replace: " + text.trim().replace("World", "Java"));
+System.out.println("Substring(0,5): " + text.trim().substring(0, 5));
+System.out.println("Index of 'World': " + text.indexOf("World"));
+
+// split example
+String csvLine = "John,25,Developer";
+String[] parts = csvLine.split(",");
+System.out.println("\nSplit result:");
+for (String part : parts) {
+System.out.println(part);
+}
+
+// formatted string
+String formatted = String.format("Name: %s, Age: %d", parts[0], Integer.parseInt(parts[1]));
+System.out.println("\nFormatted: " + formatted);
+
+// comparing strings
+String a = "test";
+String b = "TEST";
+System.out.println("\nequals(): " + a.equals(b));
+System.out.println("equalsIgnoreCase(): " + a.equalsIgnoreCase(b));
+}
+}
