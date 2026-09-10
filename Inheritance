@@ -1,0 +1,50 @@
+public class Inheritance {
+
+public static void main(String[] args) {
+Patient patient = new Patient("John Doe", 45, "Flu");
+Inpatient inpatient = new Inpatient("Jane Smith", 60, "Surgery recovery", "Ward 4", 5);
+
+patient.printDetails();
+System.out.println();
+inpatient.printDetails(); // overridden method
+}
+}
+
+// Parent / base class
+class Patient {
+protected String name;
+protected int age;
+protected String condition;
+
+public Patient(String name, int age, String condition) {
+this.name = name;
+this.age = age;
+this.condition = condition;
+}
+
+public void printDetails() {
+System.out.println("Patient: " + name);
+System.out.println("Age: " + age);
+System.out.println("Condition: " + condition);
+}
+}
+
+// Child class — inherits from Patient
+class Inpatient extends Patient {
+private String ward;
+private int daysAdmitted;
+
+public Inpatient(String name, int age, String condition, String ward, int daysAdmitted) {
+super(name, age, condition); // calls the parent constructor
+this.ward = ward;
+this.daysAdmitted = daysAdmitted;
+}
+
+// method overriding — adds to the parent's version
+@Override
+public void printDetails() {
+super.printDetails(); // reuse parent's printDetails logic
+System.out.println("Ward: " + ward);
+System.out.println("Days Admitted: " + daysAdmitted);
+}
+}
