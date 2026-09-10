@@ -1,0 +1,77 @@
+public class Polymorphism {
+
+public static void main(String[] args) {
+// --- Runtime polymorphism (method overriding) ---
+Shape shape1 = new Circle(5);
+Shape shape2 = new Rectangle(4, 6);
+
+shape1.printArea(); // calls Circle's version
+shape2.printArea(); // calls Rectangle's version
+
+// an array of Shape can hold any subclass — this IS polymorphism
+Shape[] shapes = { new Circle(2), new Rectangle(3, 3), new Circle(10) };
+System.out.println("\n--- Looping through mixed shapes ---");
+for (Shape s : shapes) {
+s.printArea(); // correct version runs automatically for each type
+}
+
+// --- Compile-time polymorphism (method overloading) ---
+System.out.println("\n--- Method Overloading ---");
+Calculator calc = new Calculator();
+System.out.println("add(2,3): " + calc.add(2, 3));
+System.out.println("add(2,3,4): " + calc.add(2, 3, 4));
+System.out.println("add(2.5,3.5): " + calc.add(2.5, 3.5));
+}
+}
+
+// Parent class
+abstract class Shape {
+public abstract double calculateArea();
+
+public void printArea() {
+System.out.println(this.getClass().getSimpleName() + " area: " + calculateArea());
+}
+}
+
+class Circle extends Shape {
+private double radius;
+
+public Circle(double radius) {
+this.radius = radius;
+}
+
+@Override
+public double calculateArea() {
+return Math.PI * radius * radius;
+}
+}
+
+class Rectangle extends Shape {
+private double width;
+private double height;
+
+public Rectangle(double width, double height) {
+this.width = width;
+this.height = height;
+}
+
+@Override
+public double calculateArea() {
+return width * height;
+}
+}
+
+// Method overloading example — same method name, different parameters
+class Calculator {
+public int add(int a, int b) {
+return a + b;
+}
+
+public int add(int a, int b, int c) {
+return a + b + c;
+}
+
+public double add(double a, double b) {
+return a + b;
+}
+}
