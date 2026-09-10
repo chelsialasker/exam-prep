@@ -1,47 +1,34 @@
-# exam-prep
-LOOP: 
-public class Loops {
 
-public static void main(String[] args) {
-forLoopExample();
-whileLoopExample();
-doWhileLoopExample();
-nestedLoopExample();
-}
+## 📁 01-basics/
+- `InputValidation.java` — Scanner input with validation loops (int, double, String)
+- `Loops.java` — for, while, do-while, nested loops
+- `Arrays.java` — arrays, ArrayList basics, looping through both
+- `StringMethods.java` — trim, split, substring, format, equals vs equalsIgnoreCase
 
-public static void forLoopExample() {
-System.out.println("--- For Loop (1 to 5) ---");
-for (int i = 1; i <= 5; i++) {
-System.out.println("Count: " + i);
-}
-}
+## 📁 02-oop/
+- `ClassAndObjectBasics.java` — constructors, getters/setters, creating objects
+- `Inheritance.java` — extends, super(), method overriding (Patient/Inpatient example)
+- `Polymorphism.java` — overriding (runtime) vs overloading (compile-time)
+- `Encapsulation.java` — private fields, validated setters (BankAccount example)
 
-public static void whileLoopExample() {
-System.out.println("\n--- While Loop (countdown from 5) ---");
-int i = 5;
-while (i > 0) {
-System.out.println("Countdown: " + i);
-i--;
-}
-}
+## 📁 03-collections/
+- `ArrayListExamples.java` — add, remove, sort, search, loop
+- `HashMapExamples.java` — put, get, containsKey, entrySet loop
 
-public static void doWhileLoopExample() {
-System.out.println("\n--- Do-While Loop (runs at least once) ---");
-int i = 0;
-do {
-System.out.println("Runs even if condition is false: " + i);
-i++;
-} while (i < 3);
-}
+## 📁 04-exceptions/
+- `TryCatchExamples.java` — basic try-catch, multi-catch, try-catch-finally, custom exceptions
 
-public static void nestedLoopExample() {
-System.out.println("\n--- Nested Loop (multiplication table 1-3) ---");
-for (int i = 1; i <= 3; i++) {
-for (int j = 1; j <= 3; j++) {
-System.out.print((i * j) + "\t");
-}
-System.out.println();
-}
-}
-}
------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## 📁 05-testing/
+- `JUnitBasics.java` — @Test, @BeforeEach, assertEquals, assertThrows, assertTrue/False
+
+## 📁 06-menu-driven-programs/
+- `ConsoleMenuTemplate.java` — switch-based menu loop skeleton for console apps
+
+---
+
+## 🔑 Quick Reminders
+- **Validation loop pattern:** `while (!scanner.hasNextInt())` → clear bad input with `scanner.next()`
+- **Inheritance:** `class Child extends Parent`, call `super(...)` in constructor, `@Override` to override methods
+- **Custom exception:** `class MyException extends Exception { constructor calls super(message) }`
+- **JUnit assertion order:** `assertEquals(expected, actual)` — expected comes first!
+- **ArrayList vs HashMap:** ArrayList = ordered list, HashMap = key-value pairs
