@@ -1,0 +1,85 @@
+public class TryCatchExamples {
+
+public static void main(String[] args) {
+basicTryCatch();
+multiCatchExample();
+tryCatchFinally();
+customExceptionExample();
+}
+
+// --- Basic try-catch ---
+public static void basicTryCatch() {
+System.out.println("--- Basic Try-Catch ---");
+try {
+int[] numbers = {1, 2, 3};
+System.out.println(numbers[5]); // will throw ArrayIndexOutOfBoundsException
+} catch (ArrayIndexOutOfBoundsException e) {
+System.out.println("Error: Index out of bounds. " + e.getMessage());
+}
+}
+
+// --- Multiple catch blocks (different exception types) ---
+public static void multiCatchExample() {
+System.out.println("\n--- Multiple Catch Blocks ---");
+String[] values = {"10", "abc", "5"};
+
+for (String val : values) {
+try {
+int number = Integer.parseInt(val); // throws NumberFormatException if invalid
+int result = 100 / number; // throws ArithmeticException if number is 0
+System.out.println("100 / " + number + " = " + result);
+} catch (NumberFormatException e) {
+System.out.println("'" + val + "' is not a valid number.");
+} catch (ArithmeticException e) {
+System.out.println("Cannot divide by zero.");
+} catch (Exception e) {
+// generic catch-all — always last
+System.out.println("Unexpected error: " + e.getMessage());
+}
+}
+}
+
+// --- try-catch-finally ---
+public static void tryCatchFinally() {
+System.out.println("\n--- Try-Catch-Finally ---");
+try {
+System.out.println("Attempting risky operation...");
+int result = 10 / 0;
+} catch (ArithmeticException e) {
+System.out.println("Caught: " + e.getMessage());
+} finally {
+// finally ALWAYS runs, whether an exception occurred or not
+System.out.println("Finally block: cleanup happens here.");
+}
+}
+
+// --- Custom exception ---
+public static void customExceptionExample() {
+System.out.println("\n--- Custom Exception ---");
+try {
+validateAge(-5);
+} catch (InvalidAgeException e) {
+System.out.println("Caught custom exception: " + e.getMessage());
+}
+
+try {
+validateAge(25);
+System.out.println("Age 25 is valid, no exception thrown.");
+} catch (InvalidAgeException e) {
+System.out.println("Caught custom exception: " + e.getMessage());
+}
+}
+
+public static void validateAge(int age) throws InvalidAgeException {
+if (age < 0 || age > 120) {
+throw new InvalidAgeException("Age must be between 0 and 120. Got: " + age);
+}
+}
+}
+
+// Custom exception class — extends Exception (checked exception)
+class InvalidAgeException extends Exception {
+public InvalidAgeException(String message) {
+super(message); // pass message to the parent Exception class
+}
+}
