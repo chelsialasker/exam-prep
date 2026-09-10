@@ -1,0 +1,53 @@
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class ArrayListExamples {
+
+public static void main(String[] args) {
+ArrayList<String> patients = new ArrayList<>();
+
+// add
+patients.add("John Doe");
+patients.add("Jane Smith");
+patients.add("Mary Jones");
+System.out.println("Initial list: " + patients);
+
+// insert at specific index
+patients.add(1, "Alex Brown");
+System.out.println("After insert at index 1: " + patients);
+
+// access
+System.out.println("First patient: " + patients.get(0));
+
+// update
+patients.set(0, "John D. Updated");
+System.out.println("After update: " + patients);
+
+// remove by value and by index
+patients.remove("Mary Jones");
+patients.remove(0);
+System.out.println("After removals: " + patients);
+
+// search
+System.out.println("Contains 'Jane Smith'? " + patients.contains("Jane Smith"));
+System.out.println("Index of 'Jane Smith': " + patients.indexOf("Jane Smith"));
+
+// size and empty check
+System.out.println("Size: " + patients.size());
+System.out.println("Is empty? " + patients.isEmpty());
+
+// sort
+Collections.sort(patients);
+System.out.println("Sorted: " + patients);
+
+// loop through (for-each)
+System.out.println("\n--- Final list ---");
+for (String p : patients) {
+System.out.println(p);
+}
+
+// clear
+patients.clear();
+System.out.println("\nAfter clear, is empty? " + patients.isEmpty());
+}
+}
