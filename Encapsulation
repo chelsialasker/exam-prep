@@ -1,0 +1,59 @@
+public class Encapsulation {
+
+public static void main(String[] args) {
+BankAccount account = new BankAccount("Chelsia", 1000.0);
+
+account.printBalance();
+
+account.deposit(500);
+account.printBalance();
+
+account.withdraw(2000); // should fail validation
+account.withdraw(300); // should succeed
+account.printBalance();
+
+// account.balance = -50; // NOT possible — field is private, this would be a compile error
+}
+}
+
+class BankAccount {
+// private fields — cannot be accessed directly from outside the class
+private String owner;
+private double balance;
+
+public BankAccount(String owner, double balance) {
+this.owner = owner;
+this.balance = balance;
+}
+
+// public methods control HOW the private data can be changed (validation)
+public void deposit(double amount) {
+if (amount <= 0) {
+System.out.println("Deposit amount must be positive.");
+return;
+}
+balance += amount;
+System.out.println("Deposited: " + amount);
+}
+
+public void withdraw(double amount) {
+if (amount <= 0) {
+System.out.println("Withdrawal amount must be positive.");
+return;
+}
+if (amount > balance) {
+System.out.println("Insufficient funds. Withdrawal denied.");
+return;
+}
+balance -= amount;
+System.out.println("Withdrew: " + amount);
+}
+
+public double getBalance() {
+return balance; // controlled read access
+}
+
+public void printBalance() {
+System.out.println(owner + "'s balance: " + balance);
+}
+}
