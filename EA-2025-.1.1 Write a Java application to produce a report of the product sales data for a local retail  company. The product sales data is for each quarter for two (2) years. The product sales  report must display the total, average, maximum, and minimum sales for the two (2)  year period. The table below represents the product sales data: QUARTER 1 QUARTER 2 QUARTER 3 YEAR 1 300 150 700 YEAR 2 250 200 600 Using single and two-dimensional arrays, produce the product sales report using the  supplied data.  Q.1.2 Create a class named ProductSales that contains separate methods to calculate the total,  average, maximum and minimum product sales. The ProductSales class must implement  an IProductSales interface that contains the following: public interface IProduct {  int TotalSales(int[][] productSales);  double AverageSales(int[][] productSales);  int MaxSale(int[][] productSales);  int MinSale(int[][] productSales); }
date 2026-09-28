@@ -1,0 +1,111 @@
+public class ProductSales {
+public static void main(String[] args) {
+int[][] sales = {
+{300, 150, 700},
+{250, 200, 600}
+};
+
+int total = 0;
+int highest = 0;
+int lowest = sales[0][0];
+
+for (int i = 0; i < sales.length; i++) {
+for (int j = 0; j < sales[i].length; j++) {
+total = total + sales[i][j];
+
+if (sales[i][j] > highest) {
+highest = sales[i][j];
+}
+
+if (sales[i][j] < lowest) {
+lowest = sales[i][j];
+}
+}
+}
+
+double average = (double) total / 6; // 6 = total number of values (2 years × 3 quarters)
+
+System.out.println("PRODUCT SALES REPORT - 2025");
+System.out.println("--------------------------------");
+System.out.println("Total sales: " + total);
+System.out.println("Average sales: " + average);
+System.out.println("Maximum sale: " + highest);
+System.out.println("Minimum sale: " + lowest);
+}
+
+
+//Question 1.2 
+
+public class ProductSales implements IProductSales {
+
+@Override
+public int TotalSales(int[][] productSales) {
+
+int total = 0;
+
+for (int i = 0; i < productSales.length; i++) {
+
+for (int j = 0; j < productSales[i].length; j++) {
+
+total = total + productSales[i][j];
+}
+}
+
+return total;
+}
+
+@Override
+public double AverageSales(int[][] productSales) {
+
+int total = TotalSales(productSales);
+
+int count = 0;
+
+for (int i = 0; i < productSales.length; i++) {
+count = count + productSales[i].length;
+}
+
+double average = (double) total / count;
+
+return average;
+}
+
+@Override
+public int MaxSale(int[][] productSales) {
+
+int highest = productSales[0][0];
+
+for (int i = 0; i < productSales.length; i++) {
+
+for (int j = 0; j < productSales[i].length; j++) {
+
+if (productSales[i][j] > highest) {
+
+highest = productSales[i][j];
+}
+}
+}
+
+return highest;
+}
+
+@Override
+public int MinSale(int[][] productSales) {
+
+int lowest = productSales[0][0];
+
+for (int i = 0; i < productSales.length; i++) {
+
+for (int j = 0; j < productSales[i].length; j++) {
+
+if (productSales[i][j] < lowest) {
+
+lowest = productSales[i][j];
+}
+}
+}
+
+return lowest;
+}
+}
+}
