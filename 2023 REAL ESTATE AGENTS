@@ -1,0 +1,348 @@
+// 2023 REAL ESTAE 
+
+//IEstateAgent.java
+package estateagent;
+
+// Q.1.4 contract exactly as given in the paper
+public interface IEstateAgent {
+    double EstateAgentSales(double[] propertySales);
+    double EstateAgentCommission(double propertySales);
+    int TopEstateAgent(double[] totalSales);
+}
+//EstateAgent.java
+package estateagent;
+
+public class EstateAgent implements IEstateAgent {
+
+    private static final double COMMISSION_RATE = 0.02; // 2% commission
+
+    // Q.1.2 total sales for one agent (one row of the 2D array)
+    @Override
+    public double EstateAgentSales(double[] propertySales) {
+        double total = 0;
+        for (double sale : propertySales) {
+            total += sale;
+        }
+        return total;
+    }
+
+    // Q.1.3 commission is 2% of the total sales
+    @Override
+    public double EstateAgentCommission(double propertySales) {
+        return propertySales * COMMISSION_RATE;
+    }
+
+    // Returns the INDEX of the agent with the highest total
+    @Override
+    public int TopEstateAgent(double[] totalSales) {
+        int topIndex = 0;
+        for (int i = 1; i < totalSales.length; i++) {
+            if (totalSales[i] > totalSales[topIndex]) {
+                topIndex = i;
+            }
+        }
+        return topIndex;
+    }
+}
+//Main.java
+package estateagent;
+
+import java.util.Locale;
+
+public class Main {
+    public static void main(String[] args) {
+        String[] agents = {"Joe Bloggs", "Jane Doe"};
+        String[] months = {"JAN", "FEB", "MAR"};
+
+        // Q.1.1 two dimensional array: row = agent, column = month
+        double[][] sales = {
+            {800000, 1500000, 2000000},
+            {700000, 1200000, 1600000}
+        };
+
+        IEstateAgent agent = new EstateAgent();
+        double[] totals = new double[agents.length];
+        double[] commissions = new double[agents.length];
+
+        System.out.println("ESTATE AGENTS SALES REPORT\n");
+        System.out.printf("%-20s", "");
+        for (String month : months) {
+            System.out.printf("%-20s", month);
+        }
+        System.out.println("\n" + "-".repeat(80));
+
+        // Print monthly sales and calculate totals and commission
+        for (int row = 0; row < agents.length; row++) {
+            System.out.printf("%-20s", agents[row]);
+            for (int col = 0; col < months.length; col++) {
+                System.out.printf("%-20s", "R " + sales[row][col]);
+            }
+            System.out.println();
+
+            totals[row] = agent.EstateAgentSales(sales[row]);
+            commissions[row] = agent.EstateAgentCommission(totals[row]);
+        }
+
+        // Q.1.2 total property sales
+        System.out.println();
+        for (int i = 0; i < agents.length; i++) {
+            System.out.println("Total property sales for " + agents[i] + " = R "
+                    + String.format(Locale.US, "%,.0f", totals[i]));
+        }
+
+        // Q.1.3 commission
+        System.out.println();
+        for (int i = 0; i < agents.length; i++) {
+            System.out.println("Sales Commission for " + agents[i] + " = R "
+                    + String.format(Locale.US, "%,.0f", commissions[i]));
+        }
+
+        // Top performer
+        System.out.println("\nTop performing estate agent: "
+                + agents[agent.TopEstateAgent(totals)]);
+    }
+}
+//1.5 JUnit testing
+package test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import estateagent.EstateAgent;
+import estateagent.IEstateAgent;
+import org.junit.jupiter.api.Test;
+
+public class EstateAgentTest {
+
+    private final IEstateAgent agent = new EstateAgent();
+
+    @Test
+    public void CalculateTotalSales_ReturnsTotalSales() {
+        double[] sales = {800000, 1500000, 2000000};
+        assertEquals(4300000.0, agent.EstateAgentSales(sales), 0.001);
+    }
+
+    @Test
+    public void CalculateTotalCommission_ReturnsCommission() {
+        assertEquals(86000.0, agent.EstateAgentCommission(4300000.0), 0.001);
+    }
+
+    @Test
+    public void TopAgent_ReturnsTopPosition() {
+        double[] totals = {4300000, 3500000};
+        assertEquals(0, agent.TopEstateAgent(totals));
+    }
+}
+//Q2. IEstateAgent.java
+package estateagent;
+
+// Q.2.7 contract exactly as given in the paper
+public interface IEstateAgent {
+    double CalculateCommission(String propertyPrice, String agentCommission);
+    boolean ValidateData(Data dataToValidate);
+}
+// Data.java
+package estateagent;
+
+public class Data {
+    private final String agentLocation;
+    private final String agentName;
+    private final double propertyPrice;
+    private final double commissionPercentage;
+
+    public Data(String agentLocation, String agentName,
+                double propertyPrice, double commissionPercentage) {
+        this.agentLocation = agentLocation;
+        this.agentName = agentName;
+        this.propertyPrice = propertyPrice;
+        this.commissionPercentage = commissionPercentage;
+    }
+
+    public String getAgentLocation() { return agentLocation; }
+    public String getAgentName() { return agentName; }
+    public double getPropertyPrice() { return propertyPrice; }
+    public double getCommissionPercentage() { return commissionPercentage; }
+}
+//EstateAgent.java
+package estateagent;
+
+public class EstateAgent implements IEstateAgent {
+
+    // Q.2.4 commission = price x (percentage / 100). 800000 x 10% = 80000.0
+    @Override
+    public double CalculateCommission(String propertyPrice, String agentCommission) {
+        double price = Double.parseDouble(propertyPrice);
+        double percentage = Double.parseDouble(agentCommission);
+        return price * (percentage / 100);
+    }
+
+    // Q.2.7 validation rules
+    @Override
+    public boolean ValidateData(Data data) {
+        if (data.getAgentLocation() == null || data.getAgentLocation().trim().isEmpty()) {
+            return false;   // location cannot be empty
+        }
+        if (data.getAgentName() == null || data.getAgentName().trim().isEmpty()) {
+            return false;   // name cannot be empty
+        }
+        if (data.getPropertyPrice() <= 0) {
+            return false;   // price must be above zero
+        }
+        return data.getCommissionPercentage() > 0; // percentage must be above zero
+    }
+}
+//EstateAgentGui.java
+package estateagent;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+public class EstateAgentGUI extends JFrame {
+
+    // Q.2.1 one combo box, three text fields, one text area
+    private final JComboBox<String> cmbLocation =
+            new JComboBox<>(new String[]{"Cape Town", "Durban", "Pretoria"});
+    private final JTextField txtName = new JTextField(12);
+    private final JTextField txtPrice = new JTextField(12);
+    private final JTextField txtCommission = new JTextField(12);
+    private final JTextArea txtReport = new JTextArea(6, 25);
+
+    private final IEstateAgent logic = new EstateAgent();
+
+    public EstateAgentGUI() {
+        setTitle("Estate Agent Report");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new GridLayout(0, 2, 5, 10));
+
+        txtReport.setEditable(false);
+
+        add(new JLabel("AGENT LOCATION:"));        add(cmbLocation);
+        add(new JLabel("ESTATE AGENT NAME:"));     add(txtName);
+        add(new JLabel("PROPERTY PRICE:"));        add(txtPrice);
+        add(new JLabel("COMMISSION PERCENTAGE:")); add(txtCommission);
+        add(new JLabel("ESTATE AGENT REPORT:"));   add(new JLabel());
+        add(new JScrollPane(txtReport));
+
+        setJMenuBar(buildMenu());
+        pack();
+        setLocationRelativeTo(null);
+    }
+
+    // Q.2.2 menu: File > Exit ; Tools > Process Report, Clear, Save Report
+    private JMenuBar buildMenu() {
+        JMenuBar bar = new JMenuBar();
+
+        JMenu file = new JMenu("File");
+        JMenuItem exit = new JMenuItem("Exit");
+        exit.addActionListener(e -> System.exit(0));        // Q.2.3
+        file.add(exit);
+
+        JMenu tools = new JMenu("Tools");
+        JMenuItem process = new JMenuItem("Process Report");
+        JMenuItem clear = new JMenuItem("Clear");
+        JMenuItem save = new JMenuItem("Save Report");
+        process.addActionListener(e -> processReport());    // Q.2.4
+        clear.addActionListener(e -> clearForm());          // Q.2.6
+        save.addActionListener(e -> saveReport());          // Q.2.5
+        tools.add(process);
+        tools.add(clear);
+        tools.add(save);
+
+        bar.add(file);
+        bar.add(tools);
+        return bar;
+    }
+
+    // Q.2.4 capture, validate, calculate and display
+    private void processReport() {
+        try {
+            String location = (String) cmbLocation.getSelectedItem();
+            String name = txtName.getText().trim();
+            double price = Double.parseDouble(txtPrice.getText().trim());
+            double percentage = Double.parseDouble(txtCommission.getText().trim());
+
+            if (!logic.ValidateData(new Data(location, name, price, percentage))) {
+                JOptionPane.showMessageDialog(this,
+                        "Invalid data. Name cannot be empty; price and percentage must be above 0.");
+                return;
+            }
+
+            double commission = logic.CalculateCommission(
+                    txtPrice.getText().trim(), txtCommission.getText().trim());
+
+            txtReport.setText("AGENT LOCATION: " + location + "\n"
+                    + "AGENT NAME: " + name + "\n"
+                    + "PROPERTY PRICE: R " + price + "\n"
+                    + "COMMISSION PERCENTAGE: " + percentage + "%\n"
+                    + "CALCULATED COMMISSION: R " + commission);
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Property price and commission must be numbers.");
+        }
+    }
+
+    // Q.2.5 save the displayed report to report.txt
+    private void saveReport() {
+        if (txtReport.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Process a report before saving.");
+            return;
+        }
+        String stars = "*".repeat(36);
+        try (PrintWriter out = new PrintWriter(new FileWriter("report.txt"))) {
+            out.println("ESTATE AGENT REPORT");
+            out.println(stars);
+            out.println(txtReport.getText());
+            out.println(stars);
+            JOptionPane.showMessageDialog(this, "Report saved to report.txt");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Could not save file: " + ex.getMessage());
+        }
+    }
+
+    // Q.2.6 back to the default state
+    private void clearForm() {
+        cmbLocation.setSelectedIndex(0);
+        txtName.setText("");
+        txtPrice.setText("");
+        txtCommission.setText("");
+        txtReport.setText("");
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new EstateAgentGUI().setVisible(true));
+    }
+}
+
+//Unit testing 
+
+package test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import estateagent.Data;
+import estateagent.EstateAgent;
+import estateagent.IEstateAgent;
+import org.junit.jupiter.api.Test;
+
+public class EstateAgentTest {
+
+    private final IEstateAgent agent = new EstateAgent();
+
+    @Test
+    public void CalculateCommission_CalculatedSuccessfully() {
+        assertEquals(80000.0, agent.CalculateCommission("800000", "10"), 0.001);
+    }
+
+    @Test
+    public void CalculateCommission_CalculatedUnSuccessfully() {
+        // a wrong expected value must NOT match the real result
+        assertNotEquals(70000.0, agent.CalculateCommission("800000", "10"), 0.001);
+    }
+
+    @Test
+    public void ValidateData_EmptyName_ReturnsFalse() {
+        assertFalse(agent.ValidateData(new Data("Cape Town", "", 800000, 10)));
+    }
+}
