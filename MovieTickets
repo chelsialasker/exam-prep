@@ -1,0 +1,311 @@
+// 2025 PAPER
+package movietickets;
+//IMovieTickets.java
+
+// Q.1.2 contract exactly as given in the paper
+public interface IMovieTickets {
+    int TotalMovieSales(int[] movieTicketSales);
+    String TopMovie(String[] movies, int[] totalSales);
+}
+//MovieTickets.java
+package movietickets;
+
+public class MovieTickets implements IMovieTickets {
+
+    // Adds up one movie's monthly sales (one row of the 2D array)
+    @Override
+    public int TotalMovieSales(int[] movieTicketSales) {
+        int total = 0;
+        for (int sale : movieTicketSales) {
+            total += sale;
+        }
+        return total;
+    }
+
+    // Returns the NAME of the movie with the highest total
+    @Override
+    public String TopMovie(String[] movies, int[] totalSales) {
+        int topIndex = 0;
+        for (int i = 1; i < totalSales.length; i++) {
+            if (totalSales[i] > totalSales[topIndex]) {
+                topIndex = i;
+            }
+        }
+        return movies[topIndex];
+    }
+}
+//main Java 1.1 
+
+
+package movietickets;
+
+public class Main {
+    public static void main(String[] args) {
+        // Q.1.1 single arrays: movie names and month headings
+        String[] movies = {"Napoleon", "Oppenheimer"};
+        String[] months = {"JAN", "FEB", "MAR"};
+
+        // Q.1.1 two dimensional array: row = movie, column = month
+        int[][] sales = {
+            {3000, 1500, 1700},
+            {3500, 1200, 1600}
+        };
+
+        IMovieTickets tickets = new MovieTickets();
+        int[] totals = new int[movies.length];
+
+        // Report heading and column headings
+        System.out.println("MOVIE TICKET SALES REPORT - 2024\n");
+        System.out.printf("%-20s", "");
+        for (String month : months) {
+            System.out.printf("%-12s", month);
+        }
+        System.out.println("\n" + "-".repeat(56));
+
+        // Print rows and columns, and calculate each movie's total
+        for (int row = 0; row < movies.length; row++) {
+            System.out.printf("%-20s", movies[row]);
+            for (int col = 0; col < months.length; col++) {
+                System.out.printf("%-12d", sales[row][col]);
+            }
+            System.out.println();
+            totals[row] = tickets.TotalMovieSales(sales[row]);
+        }
+
+        // Total sales for each movie
+        System.out.println();
+        for (int i = 0; i < movies.length; i++) {
+            System.out.println("Total movie ticket sales for " + movies[i] + " " + totals[i]);
+        }
+
+        // Top performing movie
+        System.out.println("\nTop performing movie: " + tickets.TopMovie(movies, totals));
+    }
+}
+
+1.3 JUnit testing 
+package test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import movietickets.IMovieTickets;
+import movietickets.MovieTickets;
+import org.junit.jupiter.api.Test;
+
+public class MovieTicketsTest {
+
+    private final IMovieTickets tickets = new MovieTickets();
+
+    @Test
+    public void CalculateTotalSales_ReturnsExpectedTotalSales() {
+        int[] sales = {3000, 1500, 1700};
+        assertEquals(6200, tickets.TotalMovieSales(sales));
+    }
+
+    @Test
+    public void TopMovieSales_ReturnsTopMovie() {
+        String[] movies = {"Napoleon", "Oppenheimer"};
+        int[] totals = {6200, 6300};
+        assertEquals("Oppenheimer", tickets.TopMovie(movies, totals));
+    }
+}
+
+//Question 2
+
+package movietickets;
+//ImovieTickets. Java 
+
+// Q.2.8 contract exactly as given in the paper
+public interface IMovieTickets {
+    double CalculateTotalTicketPrice(int numberOfTickets, double ticketPrice);
+    boolean ValidateData(MovieTicketData movieTicketData);
+}
+//MovieTicketData.java
+
+
+package movietickets;
+
+// Holds the captured values so they can be validated together
+public class MovieTicketData {
+    private final String movieName;
+    private final int numberOfTickets;
+    private final double ticketPrice;
+
+    public MovieTicketData(String movieName, int numberOfTickets, double ticketPrice) {
+        this.movieName = movieName;
+        this.numberOfTickets = numberOfTickets;
+        this.ticketPrice = ticketPrice;
+    }
+
+    public String getMovieName() { return movieName; }
+    public int getNumberOfTickets() { return numberOfTickets; }
+    public double getTicketPrice() { return ticketPrice; }
+}
+
+//MovieTickets.java
+package movietickets;
+
+public class MovieTickets implements IMovieTickets {
+
+    private static final double VAT_RATE = 0.14; // 14% VAT
+
+    // Q.2.4 total includes VAT: 3 x 100 x 1.14 = 342.0
+    @Override
+    public double CalculateTotalTicketPrice(int numberOfTickets, double ticketPrice) {
+        double subtotal = numberOfTickets * ticketPrice;
+        return subtotal + (subtotal * VAT_RATE);
+    }
+
+    // Q.2.7 validation rules
+    @Override
+    public boolean ValidateData(MovieTicketData data) {
+        if (data.getMovieName() == null || data.getMovieName().trim().isEmpty()) {
+            return false;            // movie name cannot be empty
+        }
+        if (data.getTicketPrice() <= 0) {
+            return false;            // price must be above zero
+        }
+        return data.getNumberOfTickets() > 0; // tickets must be above zero
+    }
+}
+
+//Q 2.1-2.6 //MovieTicketsGui.java
+package movietickets;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+public class MovieTicketsGUI extends JFrame {
+
+    // Q.2.1 one combo box, two text fields, one read only text area
+    private final JComboBox<String> cmbMovie =
+            new JComboBox<>(new String[]{"Napoleon", "Oppenheimer", "Damsel"});
+    private final JTextField txtTickets = new JTextField(10);
+    private final JTextField txtPrice = new JTextField(10);
+    private final JTextArea txtReport = new JTextArea(6, 25);
+
+    private final IMovieTickets logic = new MovieTickets();
+
+    public MovieTicketsGUI() {
+        setTitle("MOVIE TICKETS");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new GridLayout(0, 2, 5, 10));
+
+        txtReport.setEditable(false); // Q.2.1 read only
+
+        add(new JLabel("MOVIE:"));             add(cmbMovie);
+        add(new JLabel("NUMBER OF TICKETS:")); add(txtTickets);
+        add(new JLabel("TICKET PRICE:"));      add(txtPrice);
+        add(new JLabel("TICKET REPORT:"));     add(new JLabel());
+        add(new JScrollPane(txtReport));
+
+        setJMenuBar(buildMenu());
+        pack();
+        setLocationRelativeTo(null);
+    }
+
+    // Q.2.2 menu: File > Exit ; Tools > Process, Clear
+    private JMenuBar buildMenu() {
+        JMenuBar bar = new JMenuBar();
+
+        JMenu file = new JMenu("File");
+        JMenuItem exit = new JMenuItem("Exit");
+        exit.addActionListener(e -> System.exit(0));      // Q.2.3
+        file.add(exit);
+
+        JMenu tools = new JMenu("Tools");
+        JMenuItem process = new JMenuItem("Process");
+        JMenuItem clear = new JMenuItem("Clear");
+        process.addActionListener(e -> processReport());  // Q.2.4
+        clear.addActionListener(e -> clearForm());        // Q.2.6
+        tools.add(process);
+        tools.add(clear);
+
+        bar.add(file);
+        bar.add(tools);
+        return bar;
+    }
+
+    // Q.2.4 capture, validate, calculate (with VAT), display, then save
+    private void processReport() {
+        try {
+            String movie = (String) cmbMovie.getSelectedItem();
+            int tickets = Integer.parseInt(txtTickets.getText().trim());
+            double price = Double.parseDouble(txtPrice.getText().trim());
+
+            MovieTicketData data = new MovieTicketData(movie, tickets, price);
+
+            if (!logic.ValidateData(data)) {
+                JOptionPane.showMessageDialog(this, "Invalid data entered. Check all fields.");
+                return;
+            }
+
+            double total = logic.CalculateTotalTicketPrice(tickets, price);
+
+            String details = "MOVIE NAME: " + movie + "\n"
+                    + "MOVIE TICKET PRICE: R " + price + "\n"
+                    + "NUMBER OF TICKETS: " + tickets + "\n"
+                    + "TOTAL TICKET PRICE: R " + total;
+
+            txtReport.setText(details);
+            saveReport(details);          // Q.2.5 save after the report is generated
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Tickets and price must be numbers.");
+        }
+    }
+
+    // Q.2.5 writes report.txt in the sample format
+    private void saveReport(String details) {
+        String stars = "*".repeat(36);
+        try (PrintWriter out = new PrintWriter(new FileWriter("report.txt"))) {
+            out.println("MOVIE TICKET REPORT");
+            out.println(stars);
+            out.println(details);
+            out.println(stars);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Could not save file: " + ex.getMessage());
+        }
+    }
+
+    // Q.2.6 back to the default state
+    private void clearForm() {
+        cmbMovie.setSelectedIndex(0);
+        txtTickets.setText("");
+        txtPrice.setText("");
+        txtReport.setText("");
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new MovieTicketsGUI().setVisible(true));
+    }
+}
+
+// 2.9 Unit tests
+package test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import movietickets.IMovieTickets;
+import movietickets.MovieTicketData;
+import movietickets.MovieTickets;
+import org.junit.jupiter.api.Test;
+
+public class MovieTicketsTest {
+
+    private final IMovieTickets logic = new MovieTickets();
+
+    @Test
+    public void CalculateTotalTicketPrice_CalculatedSuccessfully() {
+        assertEquals(342.0, logic.CalculateTotalTicketPrice(3, 100.0), 0.001);
+    }
+
+    // Validation test (only one is required)
+    @Test
+    public void ValidateData_EmptyMovieName_ReturnsFalse() {
+        assertFalse(logic.ValidateData(new MovieTicketData("", 3, 100.0)));
+    }
+}
