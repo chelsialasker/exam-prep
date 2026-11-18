@@ -1,0 +1,238 @@
+2022 HOSPITAL GUI
+
+//Hospital inspections.java
+import javax.swing.*;
+import java.awt.*;
+
+public class HospitalInspections extends JFrame {
+
+    // Q.1.1 arrays to hold up to five inspections
+    private static final int MAX = 5;
+    private final String[] names = new String[MAX];
+    private final String[] locations = new String[MAX];
+    private final String[] years = new String[MAX];
+    private int count = 0; // number of inspections saved so far
+
+    // Q.1.1 form controls
+    private final JTextField txtName = new JTextField(15);
+    private final JTextField txtLocation = new JTextField(15);
+    private final JComboBox<String> cmbYears =
+            new JComboBox<>(new String[]{"1 Year", "2 Years", "3 Years", "4 Years", "5 Years"});
+    private final DefaultListModel<String> listModel = new DefaultListModel<>();
+    private final JList<String> lstOutput = new JList<>(listModel);
+
+    public HospitalInspections() {
+        setTitle("Hospital Inspections");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new GridLayout(0, 2, 5, 8));
+
+        JButton btnSave = new JButton("SAVE");
+        JButton btnPrint = new JButton("PRINT");
+        JButton btnClear = new JButton("CLEAR");
+        btnSave.addActionListener(e -> saveInspection());
+        btnPrint.addActionListener(e -> printInspections());
+        btnClear.addActionListener(e -> clearControls());
+
+        add(new JLabel("Hospital Name:"));          add(txtName);
+        add(new JLabel("Hospital Location:"));      add(txtLocation);
+        add(new JLabel("Years since inspection:")); add(cmbYears);
+        add(new JLabel());                          add(btnSave);
+        add(new JScrollPane(lstOutput));            add(new JLabel());
+        add(btnPrint);                              add(btnClear);
+
+        // Q.1.2 menu: File > Exit ; Tools > Save, Print, Clear (same methods as the buttons)
+        JMenuBar bar = new JMenuBar();
+        JMenu file = new JMenu("File");
+        JMenuItem exit = new JMenuItem("Exit");
+        exit.addActionListener(e -> System.exit(0));
+        file.add(exit);
+
+        JMenu tools = new JMenu("Tools");
+        JMenuItem mSave = new JMenuItem("Save");
+        JMenuItem mPrint = new JMenuItem("Print");
+        JMenuItem mClear = new JMenuItem("Clear");
+        mSave.addActionListener(e -> saveInspection());
+        mPrint.addActionListener(e -> printInspections());
+        mClear.addActionListener(e -> clearControls());
+        tools.add(mSave); tools.add(mPrint); tools.add(mClear);
+
+        bar.add(file); bar.add(tools);
+        setJMenuBar(bar);
+
+        setSize(420, 450);
+        setLocationRelativeTo(null);
+    }
+
+    // Q.1.1 save to the arrays; Q.1.2 error message on the sixth save
+    private void saveInspection() {
+        if (count >= MAX) {
+            JOptionPane.showMessageDialog(this, "Maximum inspection count reached!");
+            return;
+        }
+        names[count] = txtName.getText();
+        locations[count] = txtLocation.getText();
+        years[count] = (String) cmbYears.getSelectedItem();
+        count++;
+        txtName.setText("");
+        txtLocation.setText("");
+    }
+
+    // Q.1.1 print the array contents to the list box
+    private void printInspections() {
+        listModel.clear();
+        for (int i = 0; i < count; i++) {
+            listModel.addElement("Hospital Name: " + names[i]);
+            listModel.addElement("Hospital Location: " + locations[i]);
+            listModel.addElement("Years Since Inspection: " + years[i]);
+            listModel.addElement("*".repeat(32));
+        }
+    }
+
+    // Q.1.1 clear the controls
+    private void clearControls() {
+        txtName.setText("");
+        txtLocation.setText("");
+        cmbYears.setSelectedIndex(0);
+        listModel.clear();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new HospitalInspections().setVisible(true));
+    }
+}
+//Question 2
+
+//PropertyPrices.java
+import java.util.Locale;
+
+public class PropertyPrices {
+    public static void main(String[] args) {
+        // Q.2.1 single array for the provinces
+        String[] provinces = {"Gauteng", "Natal", "Cape"};
+
+        // Q.2.1 two dimensional array: row = province, column = flat, townhouse, house
+        double[][] prices = {
+            {800000, 1500000, 2000000},
+            {700000, 1200000, 1600000},
+            {750000, 1300000, 1800000}
+        };
+
+        // Column headings
+        System.out.printf("%-14s%-20s%-20s%-20s%n", "", "FLAT", "TOWN HOUSE", "HOUSE");
+        System.out.println("-".repeat(74));
+
+        // Print the prices for each province
+        for (int row = 0; row < provinces.length; row++) {
+            System.out.printf("%-14s", provinces[row]);
+            for (int col = 0; col < prices[row].length; col++) {
+                System.out.printf("%-20s", "R " + prices[row][col]);
+            }
+            System.out.println();
+        }
+
+        // Q.2.2 average property price per province
+        System.out.println();
+        for (int row = 0; row < provinces.length; row++) {
+            double total = 0;
+            for (double price : prices[row]) {
+                total += price;
+            }
+            double average = total / prices[row].length;
+
+            // (long) cuts off the decimals, which matches the sample (1,166,666)
+            System.out.println("Average property prices in " + provinces[row] + " = R "
+                    + String.format(Locale.US, "%,d", (long) average));
+        }
+    }
+}
+// Question 3 Travel LOG
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+
+public class TravelLog extends JFrame {
+
+    private static final String FILE_NAME = "travel.txt";
+
+    // Q.3.4 combo box contents
+    private static final String[] LOCATIONS = {"Cape Town", "Durban", "Port Elizabeth"};
+
+    // Q.3.1 three combo boxes and a list box
+    private final JComboBox<String> cmbStart = new JComboBox<>(LOCATIONS);
+    private final JComboBox<String> cmbEnd = new JComboBox<>(LOCATIONS);
+    private final JComboBox<String> cmbTravel = new JComboBox<>(new String[]{"Airplane", "Train"});
+    private final DefaultListModel<String> listModel = new DefaultListModel<>();
+    private final JList<String> lstLog = new JList<>(listModel);
+
+    public TravelLog() {
+        setTitle("Travel Log");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new GridLayout(0, 2, 5, 8));
+
+        // Q.3.1 submit button
+        JButton btnSubmit = new JButton("SUBMIT");
+        btnSubmit.addActionListener(e -> submit());
+
+        add(new JLabel("Start Location:")); add(cmbStart);
+        add(new JLabel("End Location:"));   add(cmbEnd);
+        add(new JLabel("Travel By:"));      add(cmbTravel);
+        add(new JLabel());                  add(btnSubmit);
+        add(new JScrollPane(lstLog));
+
+        setSize(400, 450);
+        setLocationRelativeTo(null);
+
+        loadFile(); // Q.3.3 show anything already saved
+    }
+
+    // Q.3.5 check locations, then Q.3.2 save to the sequential file
+    private void submit() {
+        String start = (String) cmbStart.getSelectedItem();
+        String end = (String) cmbEnd.getSelectedItem();
+
+        // Q.3.5 start and end cannot be the same
+        if (start.equals(end)) {
+            JOptionPane.showMessageDialog(this, "Destinations cannot be the same!!!");
+            return;
+        }
+
+        // Q.3.2 append (true) so earlier records are kept
+        try (PrintWriter out = new PrintWriter(new FileWriter(FILE_NAME, true))) {
+            out.println(start);
+            out.println(end);
+            out.println(cmbTravel.getSelectedItem());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Could not save: " + ex.getMessage());
+        }
+
+        loadFile(); // refresh the list
+    }
+
+    // Q.3.3 read the file (3 lines per record) and fill the list box
+    private void loadFile() {
+        listModel.clear();
+        File file = new File(FILE_NAME);
+        if (!file.exists()) {
+            return; // nothing saved yet
+        }
+
+        try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+            listModel.addElement("TRAVEL LOG");
+            String start;
+            while ((start = in.readLine()) != null) {
+                String end = in.readLine();
+                String travel = in.readLine();
+                listModel.addElement("*".repeat(36));
+                listModel.addElement("Destination 1: " + start);
+                listModel.addElement("Destination 2: " + end);
+                listModel.addElement("Travel By: " + travel);
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Could not read file: " + ex.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new TravelLog().setVisible(true));
+    }
+}
